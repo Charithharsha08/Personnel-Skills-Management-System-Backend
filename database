@@ -1,0 +1,125 @@
+-- ============================================================
+-- DATABASE CREATION
+-- ============================================================
+CREATE DATABASE IF NOT EXISTS consultancy_skills_db;
+USE consultancy_skills_db;
+
+
+-- ============================================================
+-- TABLE: personnel
+-- ============================================================
+CREATE TABLE personnel (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    role VARCHAR(100),
+    experience_level ENUM('Junior', 'Mid-Level', 'Senior') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- ============================================================
+-- TABLE: skills
+-- ============================================================
+CREATE TABLE skills (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    category VARCHAR(100) NOT NULL,
+    description TEXT
+);
+
+
+-- ============================================================
+-- TABLE: personnel_skills (Many-to-Many with proficiency)
+-- ============================================================
+CREATE TABLE personnel_skills (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    personnel_id INT NOT NULL,
+    skill_id INT NOT NULL,
+    proficiency_level INT NOT NULL,   -- 1 to 5 scale
+    CONSTRAINT fk_personnel FOREIGN KEY (personnel_id)
+        REFERENCES personnel(id) ON DELETE CASCADE,
+    CONSTRAINT fk_skill FOREIGN KEY (skill_id)
+        REFERENCES skills(id) ON DELETE CASCADE,
+    UNIQUE (personnel_id, skill_id)  -- prevents duplicate skills per person
+);
+
+
+-- ============================================================
+-- TABLE: projects
+-- ============================================================
+CREATE TABLE projects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    project_name VARCHAR(150) NOT NULL,
+    description TEXT,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    status ENUM('Planning', 'Active', 'Completed') NOT NULL DEFAULT 'Planning',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- ============================================================
+-- TABLE: project_required_skills (Many-to-Many)
+-- ============================================================
+CREATE TABLE project_required_skills (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    project_id INT NOT NULL,
+    skill_id INT NOT NULL,
+    minimum_proficiency INT NOT NULL,  -- Level 1–5
+    CONSTRAINT fk_project FOREIGN KEY (project_id)
+        REFERENCES projects(id) ON DELETE CASCADE,
+    CONSTRAINT fk_required_skill FOREIGN KEY (skill_id)
+        REFERENCES skills(id) ON DELETE CASCADE,
+    UNIQUE (project_id, skill_id)  -- prevents duplicate skill requirements
+);
+
+
+-- ============================================================
+-- OPTIONAL SEED DATA
+-- ============================================================
+
+-- Insert basic personnel
+INSERT INTO personnel (name, email, role, experience_level) VALUES
+('Alice Fernando', 'alice@example.com', 'Frontend Developer', 'Mid-Level'),
+('Nimal Silva', 'nimal@example.com', 'Backend Developer', 'Senior');
+
+-- Insert skills
+INSERT INTO skills (name, category, description) VALUES
+('React', 'Framework', 'Frontend JavaScript library'),
+('Node.js', 'Runtime', 'Backend JavaScript runtime'),
+('Python', 'Programming Language', 'General purpose language'),
+('AWS', 'Cloud', 'Amazon Web Services cloud platform');
+
+-- Assign skills to personnel
+INSERT INTO personnel_skills (personnel_id, skill_id, proficiency_level) VALUES
+(1, 1, 4),  -- Alice: React level 4
+(1, 2, 2),  -- Alice: Node.js level 2
+(2, 2, 5),  -- Nimal: Node.js level 5
+(2, 3, 3);  -- Nimal: Python level 3
+
+-- Create sample projects
+INSERT INTO projects (project_name, description, start_date, end_date, status) VALUES
+('Web Platform Upgrade', 'Upgrade client web portal', '2025-01-10', '2025-03-15', 'Planning'),
+('AI Analytics Tool', 'Develop analytics system', '2025-02-01', '2025-05-01', 'Planning');
+
+-- Required skills for projects
+INSERT INTO project_required_skills (project_id, skill_id, minimum_proficiency) VALUES
+(1, 1, 3),  -- React Level 3+
+(1, 2, 2),  -- Node.js Level 2+
+(2, 3, 3);  -- Python Level 3+
+
+
+
+SELECT
+    p.id AS personnel_id,
+    p.name AS personnel_name,
+    s.name AS skill_name,
+    ps.proficiency_level
+FROM personnel p
+JOIN personnel_skills ps ON p.id = ps.personnel_id
+JOIN project_required_skills prs ON ps.skill_id = prs.skill_id
+WHERE prs.project_id = ?
+  AND ps.proficiency_level >= prs.minimum_proficiency
+ORDER BY p.id;
+
