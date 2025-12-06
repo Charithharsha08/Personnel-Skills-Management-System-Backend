@@ -14,16 +14,16 @@ export const ProjectRepository = {
 
     create: async (project: ProjectData) => {
         const [result]: any = await db.query(
-            `INSERT INTO projects (name, description, status, deadline) VALUES (?, ?, ?, ?)`,
-            [project.name, project.description, project.status, project.deadline]
+            `INSERT INTO projects (name, description, status, start_date, end_date) VALUES (?, ?, ?, ?, ?)`,
+            [project.project_name, project.description, project.status, project.start_date, project.end_date ]
         );
         return result.insertId;
     },
 
     update: async (id: number, project: ProjectData) => {
         const [result]: any = await db.query(
-            `UPDATE projects SET name=?, description=?, status=?, deadline=? WHERE id=?`,
-            [project.name, project.description, project.status, project.deadline, id]
+            `UPDATE projects SET name=?, description=?, status=?, start_date=?, end_date=? WHERE id=?`,
+            [project.project_name, project.description, project.status, project.start_date, project.end_date , id]
         );
         return result.affectedRows > 0;
     },
