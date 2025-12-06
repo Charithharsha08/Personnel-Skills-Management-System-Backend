@@ -1,4 +1,5 @@
 import {db} from "../config/db";
+import {SkillData, SkillUpdateData} from "../dto/skill.data";
 
 export const skillsRepository = {
     getAll: async () => {
@@ -6,7 +7,7 @@ export const skillsRepository = {
         return rows;
     },
 
-    createNewSkill: async (data: any) => {
+    createNewSkill: async (data: SkillData) => {
         const [result]: any = await db.query("INSERT INTO skills (name, category, description) VALUES (?,?,?)",
             [data.name, data.category, data.description]
         );
@@ -26,7 +27,7 @@ export const skillsRepository = {
         );
         return result.affectedRows > 0;
     },
-    update: async (id: number, data: any) => {
+    update: async (id: number, data: SkillUpdateData) => {
         console.log( "this is skilled ", data);
         const [result]: any = await db.query("UPDATE skills SET name=?, category=?, description=? WHERE id = ?",
             [data.name, data.category, data.description, id]

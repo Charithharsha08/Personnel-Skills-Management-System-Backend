@@ -1,10 +1,10 @@
 import {db} from "../config/db";
-import {ProjectRequiredSkillData} from "../dto/project.required.skill";
+import {ProjectRequiredSkillData, ProjectRequiredSkillUpdateData} from "../dto/project.required.skill";
 
 export const ProjectRequiredSkillsRepository = {
     getAllForProject: async (projectId: number) => {
         const [rows]: any = await db.query(
-            `SELECT prs.id, prs.skill_id, s.name AS skill_name, prs.required_level
+            `SELECT prs.id, prs.skill_id, s.name AS skill_name, prs.minimum_proficiency
              FROM project_required_skills prs
              JOIN skills s ON prs.skill_id = s.id
              WHERE prs.project_id = ?`,
@@ -13,21 +13,21 @@ export const ProjectRequiredSkillsRepository = {
         return rows;
     },
 
-    addSkillToProject: async (projectId: number, data: ProjectRequiredSkillData) => {
+    addSkillToProject: async (data: ProjectRequiredSkillData) => {
         const [result]: any = await db.query(
-            `INSERT INTO project_required_skills (project_id, skill_id, required_level)
+            `INSERT INTO project_required_skills (project_id, skill_id, minimum_proficiency)
              VALUES (?, ?, ?)`,
-            [projectId, data.skill_id, data.required_level]
+            [data.project_id, data.skill_id, data.minimum_proficiency]
         );
         return result.insertId;
     },
 
-    updateProjectSkill: async (projectId: number, skillId: number, data: ProjectRequiredSkillData) => {
+    updateProjectSkill: async (data: ProjectRequiredSkillUpdateData) => {
         const [result]: any = await db.query(
             `UPDATE project_required_skills
-             SET required_level = ?
+             SET minimum_proficiency = ?
              WHERE project_id = ? AND skill_id = ?`,
-            [data.required_level, projectId, skillId]
+            [data.minimum_proficiency, data.project_id , data.skill_id]
         );
         return result.affectedRows > 0;
     },

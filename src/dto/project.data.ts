@@ -1,6 +1,7 @@
 export interface ProjectData {
-    name: string;
+    project_name: string;
     description: string;
+    start_date: Date;
+    end_date: Date;
     status: string;
-    deadline: string;
 }

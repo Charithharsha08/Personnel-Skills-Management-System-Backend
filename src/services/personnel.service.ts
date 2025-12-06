@@ -1,11 +1,12 @@
 import {PersonnelRepository} from "../repositories/personnel.repo";
+import {PersonnelData, UpdatePersonnelData} from "../dto/personnel.data";
 
 export const PersonnelService = {
     getAllPersonnel: async () => {
         return await PersonnelRepository.getAll();
     },
 
-    createPersonnel: async (data: any) => {
+    createPersonnel: async (data: PersonnelData) => {
         return await PersonnelRepository.create(data);
     },
 
@@ -13,7 +14,7 @@ export const PersonnelService = {
         return await PersonnelRepository.getById(id);
     },
 
-    updatePersonnel: async (id: number, data: any) => {
+    updatePersonnel: async (id: number, data: UpdatePersonnelData) => {
         return await PersonnelRepository.update(id, data);
         },
 
