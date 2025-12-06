@@ -5,6 +5,7 @@ import personnelRoutes from "./routes/personnel.routes";
 import skillRoutes from "./routes/skill.routes";
 import personalSkillRoutes from "./routes/personal.skill.routes";
 import ProjectRoutes from "./routes/project.routes";
+import ProjectRequiredSkillRoutes from "./routes/project.required.skill.routes";
 
 // 1. Initialize the express app
 const app: Express = express();
@@ -30,6 +31,7 @@ app.use("/api/v1/personnel", personnelRoutes);
 app.use("/api/v1/skills", skillRoutes);
 app.use("/api/v1/personal-skills", personalSkillRoutes);
 app.use("/api/v1/projects",ProjectRoutes)
+app.use("/api/v1/project-required-skills",ProjectRequiredSkillRoutes)
 
 
 
