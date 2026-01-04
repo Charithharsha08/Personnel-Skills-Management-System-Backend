@@ -197,24 +197,6 @@ All relationships include foreign keys and cascading rules.
 
 ---
 
-# 🌟 Additional Feature (Required by Assignment)
-
-Add a section like this after you implement your creative feature:
-
-## 🎨 Additional Feature – *[Your Feature Name]*
-
-### 🔍 Overview
-
-Explain what your feature does in a few sentences.
-
-### 🧠 Why This Feature?
-
-Explain the real-world benefit.
-
-### ⚙️ Implementation
-
-Brief explanation of how you implemented it.
-
 ### 📸 Screenshot
 
 <img width="1680" height="1050" alt="Screenshot 2025-12-03 at 3 59 08 PM" src="https://github.com/user-attachments/assets/251baefa-224e-4e6f-9446-69e9773b4bd0" />
